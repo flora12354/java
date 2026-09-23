@@ -1,0 +1,27 @@
+:root {
+  --bg-deep: #0a0a1f;
+  --bg-mid: #141233;
+  --accent: #9b6cff;
+  --accent-2: #4ad9ff;
+  --accent-3: #ff7bd5;
+  --text: #eef0ff;
+  --text-dim: #9fa0c8;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html,
+body,
+#app {
+  height: 100%;
+}
+
+body {
+  font-family: "PingFang SC", "Microsoft YaHei", "Helvetica Neue", sans-serif;
+  color: var(--text);
+  overflow: hidden;
+}
