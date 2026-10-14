@@ -1,0 +1,1 @@
+const e="/api";async function r(t,n={}){const o=await fetch(e+t,{headers:{"Content-Type":"application/json"},...n});if(!o.ok)throw new Error("网络请求失败（HTTP "+o.status+"）");return o.json()}function s(t,n){return r(t,{method:"POST",body:JSON.stringify(n)})}export{s as p};
