@@ -4,15 +4,24 @@
     <header class="navbar">
       <div class="nav-inner">
         <div class="nav-left">
-          <div class="brand">
+          <div class="brand" @click="goHome" role="button" title="回到首页">
             <span class="brand-badge"><i></i></span>
             <span class="brand-name">Hello Kitty</span>
           </div>
           <nav class="nav-menu">
             <button class="nav-item active" @click="goHome">首页</button>
-            <button class="nav-item" @click="comingSoon('分类')">分类</button>
-            <button class="nav-item" @click="comingSoon('发现')">发现</button>
-            <button class="nav-item" @click="comingSoon('我的')">我的</button>
+            <button class="nav-item" @click="router.push('/about')">介绍</button>
+            <button class="nav-item nav-icon-btn" @click="router.push('/favorites')" title="我的收藏">
+              <span class="nav-ico">💗</span>
+              <span class="nav-label">我的收藏</span>
+              <span class="nav-badge" v-if="store.favorites.length">{{ store.favorites.length }}</span>
+            </button>
+            <button class="nav-item nav-icon-btn" @click="router.push('/cart')" title="购物车">
+              <span class="nav-ico">🛒</span>
+              <span class="nav-label">购物车</span>
+              <span class="nav-badge" v-if="store.cartCount()">{{ store.cartCount() }}</span>
+            </button>
+            <button class="nav-item admin-btn" @click="router.push('/admin/login')">后台管理</button>
           </nav>
         </div>
         <div class="nav-right">
@@ -49,15 +58,36 @@
     <main class="content" ref="contentRef">
       <div class="content-inner">
         <div class="content-head">
-          <h2>{{ keyword ? `“${keyword}” 的搜索结果` : '为你推荐' }}</h2>
+          <h2>{{ keyword ? `“${keyword}” 的搜索结果` : (activeTag === '全部' ? '为你推荐' : activeTag + ' · 分类') }}</h2>
           <span class="count">{{ results.length }} 件好物</span>
         </div>
 
+        <div class="tag-bar">
+          <button
+            v-for="t in allTags" :key="t"
+            class="tag-chip" :class="{ on: activeTag === t }"
+            @click="pickTag(t)"
+          >{{ t }}</button>
+        </div>
+
         <div class="grid" v-if="results.length">
-          <div class="good-card" v-for="item in results" :key="item.name">
-            <div class="good-emoji">{{ item.emoji }}</div>
-            <div class="good-name">{{ item.name }}</div>
-            <span class="good-tag">{{ item.tag }}</span>
+          <div class="good-card" v-for="item in results" :key="item.id">
+            <button
+              class="fav-btn"
+              :class="{ on: store.isFavorite(item.id) }"
+              :title="store.isFavorite(item.id) ? '取消收藏' : '加入收藏'"
+              @click.stop="toggleFav(item)"
+            >{{ store.isFavorite(item.id) ? '💖' : '🤍' }}</button>
+            <div class="good-emoji" @click="goDetail(item)">{{ item.emoji }}</div>
+            <div class="good-name" @click="goDetail(item)">{{ item.name }}</div>
+            <div class="good-desc" @click="goDetail(item)">{{ item.description }}</div>
+            <div class="good-foot">
+              <span class="good-price">¥{{ Number(item.price).toFixed(2) }}</span>
+              <span class="good-tag">{{ item.tag }}</span>
+            </div>
+            <button class="cart-add-btn" @click.stop="addToCart(item)" title="加入购物车">
+              ＋ 加入购物车
+            </button>
           </div>
         </div>
 
@@ -71,40 +101,37 @@
 </template>
 
 <script setup>
-import { ref, computed, inject } from 'vue'
+import { ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { searchApi } from '../api/home'
+import { mockGoods, filterGoods, allTags } from '../api/goodsData'
+import { store } from '../api/store'
 
 const router = useRouter()
-const notify = inject('notify')
 
 const user = JSON.parse(localStorage.getItem('user') || '{}')
 const username = computed(() => user.username || '可爱用户')
 
-// 本地模拟数据（后端接入后由 /api/search 返回真实数据）
-const mock = [
-  { name: 'Hello Kitty 公仔', emoji: '🧸', tag: '周边' },
-  { name: '草莓发卡', emoji: '🎀', tag: '配饰' },
-  { name: '粉色笔记本', emoji: '📒', tag: '文具' },
-  { name: '猫咪抱枕', emoji: '🐱', tag: '家居' },
-  { name: '樱花水杯', emoji: '🥤', tag: '生活' },
-  { name: '奶油蛋糕', emoji: '🍰', tag: '美食' },
-  { name: '毛绒拖鞋', emoji: '🥿', tag: '家居' },
-  { name: '星星发夹', emoji: '⭐', tag: '配饰' },
-  { name: '云朵台灯', emoji: '💡', tag: '家居' },
-  { name: '爱心信封', emoji: '💌', tag: '文具' }
-]
+// 本地演示数据见 api/goodsData.js（与后端 goods 表字段一致，含 id/价格/描述）
 
 const keyword = ref('')
-const results = ref([...mock])
+const results = ref([...mockGoods])
+const activeTag = ref('全部')
 const loading = ref(false)
 const usedBackend = ref(false)
 const hasSearched = ref(false)
 const contentRef = ref(null)
 
 function filterLocal(kw) {
-  if (!kw) return mock
-  return mock.filter(i => i.name.includes(kw) || i.tag.includes(kw))
+  return filterGoods(kw, activeTag.value)
+}
+
+function pickTag(t) {
+  activeTag.value = t
+  // 切换分类时在本地数据内筛选（若有关键词则一并应用）
+  results.value = filterLocal(keyword.value)
+  usedBackend.value = false
+  if (contentRef.value) contentRef.value.scrollTop = 0
 }
 
 async function onSearch() {
@@ -130,14 +157,25 @@ async function onSearch() {
 
 function goHome() {
   keyword.value = ''
-  results.value = [...mock]
+  activeTag.value = '全部'
+  results.value = [...mockGoods]
   hasSearched.value = false
   usedBackend.value = false
   if (contentRef.value) contentRef.value.scrollTop = 0
 }
 
-function comingSoon(name) {
-  if (notify) notify(`「${name}」页面开发中，敬请期待~`)
+function toggleFav(item) {
+  store.toggleFavorite(item)
+}
+
+function addToCart(item) {
+  store.addToCart(item)
+}
+
+function goDetail(item) {
+  if (item && item.id != null) {
+    router.push(`/goods/${item.id}`)
+  }
 }
 
 function handleLogout() {
@@ -185,7 +223,9 @@ function handleLogout() {
   display: flex;
   align-items: center;
   gap: 10px;
+  cursor: pointer;
 }
+.brand:hover .brand-name { color: #ff7aa8; }
 .brand-badge {
   position: relative;
   width: 34px;
@@ -241,6 +281,37 @@ function handleLogout() {
 .nav-item:hover {
   background: #fff0f6;
   color: #ff5c8a;
+}
+.nav-item.admin-btn {
+  border: 2px solid #ffd9e6;
+  background: #fff8fb;
+}
+.nav-item.admin-btn:hover {
+  background: #ffe3ee;
+}
+.nav-icon-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  position: relative;
+}
+.nav-ico { font-size: 15px; line-height: 1; }
+.nav-badge {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #ff5c8a, #ff7aa8);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 8px rgba(255, 92, 138, 0.45);
 }
 .nav-item.active {
   background: linear-gradient(90deg, #ff7aa8, #ff5c8a);
@@ -367,24 +438,96 @@ function handleLogout() {
   font-size: 13px;
   color: #c48ba2;
 }
+.tag-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0 4px 18px;
+}
+.tag-chip {
+  border: 2px solid #ffd9e6;
+  background: #fff8fb;
+  color: #a96f88;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 6px 16px;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: background 0.18s, color 0.18s, transform 0.15s;
+}
+.tag-chip:hover {
+  background: #ffe3ee;
+  color: #ff5c8a;
+  transform: translateY(-1px);
+}
+.tag-chip.on {
+  background: linear-gradient(90deg, #ff7aa8, #ff5c8a);
+  border-color: transparent;
+  color: #fff;
+  box-shadow: 0 6px 16px rgba(255, 92, 138, 0.3);
+}
 .grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
   gap: 16px;
 }
 .good-card {
+  position: relative;
   background: #ffffff;
   border: 2px solid #ffd9e6;
   border-radius: 20px;
-  padding: 22px 16px;
+  padding: 22px 16px 14px;
   text-align: center;
   box-shadow: 0 10px 26px rgba(255, 105, 155, 0.14);
+  cursor: pointer;
   transition: transform 0.18s, box-shadow 0.18s;
+  display: flex;
+  flex-direction: column;
 }
 .good-card:hover {
   transform: translateY(-4px);
   box-shadow: 0 16px 34px rgba(255, 105, 155, 0.28);
 }
+.fav-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  border: none;
+  background: transparent;
+  font-size: 18px;
+  line-height: 1;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 50%;
+  transition: transform 0.15s;
+}
+.fav-btn:hover { transform: scale(1.25); }
+.fav-btn.on { animation: fav-pop 0.3s ease; }
+@keyframes fav-pop {
+  0% { transform: scale(0.6); }
+  60% { transform: scale(1.3); }
+  100% { transform: scale(1); }
+}
+.cart-add-btn {
+  margin-top: auto;
+  border: 2px solid #ffd9e6;
+  background: #fff8fb;
+  color: #ff5c8a;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 8px 0;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: background 0.18s, color 0.18s, transform 0.15s;
+  width: 100%;
+}
+.cart-add-btn:hover {
+  background: linear-gradient(90deg, #ff7aa8, #ff5c8a);
+  border-color: transparent;
+  color: #fff;
+  transform: translateY(-1px);
+}
+.good-card .good-foot { margin-bottom: 10px; }
 .good-emoji {
   font-size: 40px;
   margin-bottom: 12px;
@@ -393,7 +536,27 @@ function handleLogout() {
   font-size: 14px;
   color: #5d3a47;
   font-weight: 600;
+  margin-bottom: 6px;
+}
+.good-desc {
+  font-size: 12px;
+  color: #b08898;
+  line-height: 1.5;
   margin-bottom: 10px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.good-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.good-price {
+  font-size: 15px;
+  font-weight: 700;
+  color: #ff5c8a;
 }
 .good-tag {
   display: inline-block;
@@ -402,8 +565,7 @@ function handleLogout() {
   background: #fff0f6;
   border-radius: 999px;
   padding: 3px 12px;
-}
-.empty {
+}.empty {
   text-align: center;
   padding: 60px 0;
   color: #c48ba2;

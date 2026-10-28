@@ -18,3 +18,18 @@ export function post(url, data) {
     body: JSON.stringify(data)
   })
 }
+
+export function get(url) {
+  return request(url, { method: 'GET' })
+}
+
+export function put(url, data) {
+  return request(url, {
+    method: 'PUT',
+    body: JSON.stringify(data)
+  })
+}
+
+export function del(url) {
+  return request(url, { method: 'DELETE' })
+}
