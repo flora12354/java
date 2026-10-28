@@ -10,9 +10,7 @@
           </div>
           <nav class="nav-menu">
             <button class="nav-item active" @click="goHome">首页</button>
-            <button class="nav-item" @click="comingSoon('分类')">分类</button>
-            <button class="nav-item" @click="comingSoon('发现')">发现</button>
-            <button class="nav-item" @click="comingSoon('我的')">我的</button>
+            <button class="nav-item" @click="router.push('/about')">介绍</button>
           </nav>
         </div>
         <div class="nav-right">
@@ -54,7 +52,7 @@
         </div>
 
         <div class="grid" v-if="results.length">
-          <div class="good-card" v-for="item in results" :key="item.name">
+          <div class="good-card" v-for="item in results" :key="item.id" @click="goDetail(item)">
             <div class="good-emoji">{{ item.emoji }}</div>
             <div class="good-name">{{ item.name }}</div>
             <span class="good-tag">{{ item.tag }}</span>
@@ -71,40 +69,27 @@
 </template>
 
 <script setup>
-import { ref, computed, inject } from 'vue'
+import { ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { searchApi } from '../api/home'
+import { mockGoods, filterGoods } from '../api/goodsData'
 
 const router = useRouter()
-const notify = inject('notify')
 
 const user = JSON.parse(localStorage.getItem('user') || '{}')
 const username = computed(() => user.username || '可爱用户')
 
-// 本地模拟数据（后端接入后由 /api/search 返回真实数据）
-const mock = [
-  { name: 'Hello Kitty 公仔', emoji: '🧸', tag: '周边' },
-  { name: '草莓发卡', emoji: '🎀', tag: '配饰' },
-  { name: '粉色笔记本', emoji: '📒', tag: '文具' },
-  { name: '猫咪抱枕', emoji: '🐱', tag: '家居' },
-  { name: '樱花水杯', emoji: '🥤', tag: '生活' },
-  { name: '奶油蛋糕', emoji: '🍰', tag: '美食' },
-  { name: '毛绒拖鞋', emoji: '🥿', tag: '家居' },
-  { name: '星星发夹', emoji: '⭐', tag: '配饰' },
-  { name: '云朵台灯', emoji: '💡', tag: '家居' },
-  { name: '爱心信封', emoji: '💌', tag: '文具' }
-]
+// 本地演示数据见 api/goodsData.js（与后端 goods 表字段一致，含 id/价格/描述）
 
 const keyword = ref('')
-const results = ref([...mock])
+const results = ref([...mockGoods])
 const loading = ref(false)
 const usedBackend = ref(false)
 const hasSearched = ref(false)
 const contentRef = ref(null)
 
 function filterLocal(kw) {
-  if (!kw) return mock
-  return mock.filter(i => i.name.includes(kw) || i.tag.includes(kw))
+  return filterGoods(kw)
 }
 
 async function onSearch() {
@@ -130,14 +115,16 @@ async function onSearch() {
 
 function goHome() {
   keyword.value = ''
-  results.value = [...mock]
+  results.value = [...mockGoods]
   hasSearched.value = false
   usedBackend.value = false
   if (contentRef.value) contentRef.value.scrollTop = 0
 }
 
-function comingSoon(name) {
-  if (notify) notify(`「${name}」页面开发中，敬请期待~`)
+function goDetail(item) {
+  if (item && item.id != null) {
+    router.push(`/goods/${item.id}`)
+  }
 }
 
 function handleLogout() {
@@ -379,6 +366,7 @@ function handleLogout() {
   padding: 22px 16px;
   text-align: center;
   box-shadow: 0 10px 26px rgba(255, 105, 155, 0.14);
+  cursor: pointer;
   transition: transform 0.18s, box-shadow 0.18s;
 }
 .good-card:hover {
