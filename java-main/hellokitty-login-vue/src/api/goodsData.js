@@ -124,6 +124,9 @@ export const mockGoods = [
     description: '硅胶猫耳耳机套，自带挂绳防丢。手感软弹防尘防摔，耳机放进包里再也不怕刮花，挂在包上还是个可爱小挂件。' }
 ]
 
+// 商品实拍图：public/images/goods/{id}/product.png（按商品名生成，emoji 仅作兜底）
+mockGoods.forEach(i => { i.image = `/images/goods/${i.id}/product.png` })
+
 // 所有分类（用于首页筛选条）
 export const allTags = ['全部', ...new Set(mockGoods.map(i => i.tag))]
 

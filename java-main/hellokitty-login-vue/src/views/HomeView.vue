@@ -78,7 +78,10 @@
               :title="store.isFavorite(item.id) ? '取消收藏' : '加入收藏'"
               @click.stop="toggleFav(item)"
             >{{ store.isFavorite(item.id) ? '💖' : '🤍' }}</button>
-            <div class="good-emoji" @click="goDetail(item)">{{ item.emoji }}</div>
+            <div class="good-emoji" @click="goDetail(item)">
+              <img v-if="item.image" :src="item.image" :alt="item.name" class="good-img" loading="lazy">
+              <template v-else>{{ item.emoji }}</template>
+            </div>
             <div class="good-name" @click="goDetail(item)">{{ item.name }}</div>
             <div class="good-desc" @click="goDetail(item)">{{ item.description }}</div>
             <div class="good-foot">
@@ -531,6 +534,13 @@ function handleLogout() {
 .good-emoji {
   font-size: 40px;
   margin-bottom: 12px;
+}
+.good-img {
+  width: 100%;
+  height: 140px;
+  object-fit: cover;
+  border-radius: 14px;
+  display: block;
 }
 .good-name {
   font-size: 14px;

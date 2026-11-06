@@ -35,7 +35,10 @@
         <div class="grid" v-if="store.favorites.length">
           <div class="good-card" v-for="item in store.favorites" :key="item.id">
             <button class="fav-btn on" title="取消收藏" @click="store.toggleFavorite(item)">💖</button>
-            <div class="good-emoji">{{ item.emoji }}</div>
+            <div class="good-emoji">
+              <img v-if="item.image" :src="item.image" :alt="item.name" class="good-img" loading="lazy">
+              <template v-else>{{ item.emoji }}</template>
+            </div>
             <div class="good-name">{{ item.name }}</div>
             <div class="good-desc">{{ item.description }}</div>
             <div class="good-foot">
@@ -213,6 +216,13 @@ const username = computed(() => user.username || '可爱用户')
 }
 .fav-btn:hover { transform: scale(1.25); }
 .good-emoji { font-size: 40px; margin-bottom: 12px; }
+.good-img {
+  width: 100%;
+  height: 140px;
+  object-fit: cover;
+  border-radius: 14px;
+  display: block;
+}
 .good-name { font-size: 14px; color: #5d3a47; font-weight: 600; margin-bottom: 6px; }
 .good-desc {
   font-size: 12px;

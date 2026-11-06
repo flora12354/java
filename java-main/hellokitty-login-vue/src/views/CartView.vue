@@ -35,7 +35,10 @@
         <template v-if="store.cart.length">
           <div class="cart-list">
             <div class="cart-row" v-for="item in store.cart" :key="item.id">
-              <div class="row-emoji">{{ item.emoji }}</div>
+              <div class="row-emoji">
+                <img v-if="item.image" :src="item.image" :alt="item.name" class="row-img" loading="lazy">
+                <template v-else>{{ item.emoji }}</template>
+              </div>
               <div class="row-info">
                 <div class="row-name">{{ item.name }}</div>
                 <div class="row-price">¥{{ Number(item.price).toFixed(2) }}</div>
@@ -241,6 +244,13 @@ function checkout() {
 }
 .cart-row + .cart-row { border-top: 1px dashed #ffd9e6; }
 .row-emoji { font-size: 32px; flex: none; }
+.row-img {
+  width: 56px;
+  height: 56px;
+  object-fit: cover;
+  border-radius: 12px;
+  display: block;
+}
 .row-info { flex: 1; min-width: 0; }
 .row-name { font-size: 14px; font-weight: 600; color: #5d3a47; margin-bottom: 4px; }
 .row-price { font-size: 13px; color: #b08898; }

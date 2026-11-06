@@ -25,7 +25,10 @@
         <button class="back-btn" @click="router.push('/home')">← 返回首页</button>
 
         <section class="detail-card">
-          <div class="detail-emoji">{{ goods.emoji }}</div>
+          <div class="detail-emoji">
+            <img v-if="goods.image" :src="goods.image" :alt="goods.name" class="detail-img" loading="lazy">
+            <template v-else>{{ goods.emoji }}</template>
+          </div>
           <div class="detail-info">
             <h1 class="detail-name">{{ goods.name }}</h1>
             <div class="detail-meta">
@@ -207,6 +210,14 @@ function handleLogout() {
   font-size: 90px;
   background: linear-gradient(135deg, #fff0f6, #ffe3ee);
   border-radius: 24px;
+  overflow: hidden;
+}
+.detail-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 24px;
+  display: block;
 }
 .detail-info { flex: 1; }
 .detail-name { font-size: 26px; color: #5d3a47; margin-bottom: 12px; }

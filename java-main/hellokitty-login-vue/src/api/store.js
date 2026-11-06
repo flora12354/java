@@ -43,6 +43,7 @@ export const store = reactive({
         id: item.id,
         name: item.name,
         emoji: item.emoji,
+        image: item.image,
         tag: item.tag,
         price: item.price,
         description: item.description,
