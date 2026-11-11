@@ -12,22 +12,24 @@
       </div>
     </header>
 
-    <!-- 工具栏 -->
-    <section class="toolbar">
-      <form class="toolbar-search" @submit.prevent="loadGoods">
-        <input v-model.trim="keyword" type="text" placeholder="搜索商品名称 / 分类 / 描述">
-        <select v-model="activeCategory">
-          <option value="全部">全部分类</option>
-          <option v-for="c in categories" :key="c" :value="c">{{ c }}</option>
-        </select>
-        <button type="submit" class="btn primary">查询</button>
-        <button type="button" class="btn ghost" @click="resetFilter">重置</button>
-      </form>
-      <button class="btn primary add-btn" @click="openAdd">＋ 新增商品</button>
-    </section>
+    <!-- 可滚动内容区：工具栏 + 商品表格 -->
+    <div class="admin-scroll">
+      <!-- 工具栏 -->
+      <section class="toolbar">
+        <form class="toolbar-search" @submit.prevent="loadGoods">
+          <input v-model.trim="keyword" type="text" placeholder="搜索商品名称 / 分类 / 描述">
+          <select v-model="activeCategory">
+            <option value="全部">全部分类</option>
+            <option v-for="c in categories" :key="c" :value="c">{{ c }}</option>
+          </select>
+          <button type="submit" class="btn primary">查询</button>
+          <button type="button" class="btn ghost" @click="resetFilter">重置</button>
+        </form>
+        <button class="btn primary add-btn" @click="openAdd">＋ 新增商品</button>
+      </section>
 
-    <!-- 商品表格 -->
-    <main class="table-wrap">
+      <!-- 商品表格 -->
+      <main class="table-wrap">
       <table class="goods-table">
         <thead>
           <tr>
@@ -63,8 +65,8 @@
           </tr>
         </tbody>
       </table>
-    </main>
-
+      </main>
+    </div>
     <!-- 新增 / 编辑弹窗 -->
     <div class="modal-mask" v-if="dialogVisible" @click.self="closeDialog">
       <div class="modal">
@@ -230,10 +232,17 @@ onMounted(loadGoods)
 
 <style scoped>
 .admin-page {
-  min-height: 100vh;
+  height: 100vh;
   background: #f2f5fa;
   display: flex;
   flex-direction: column;
+  overflow: hidden;
+}
+/* ===== 可滚动内容区 ===== */
+.admin-scroll {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
 }
 /* ===== 顶部导航 ===== */
 .admin-navbar {

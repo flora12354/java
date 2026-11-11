@@ -93,7 +93,7 @@
           <ol class="steps">
             <li>双击 <code>一键启动全部.bat</code>：自动启动后端（8081）并等待端口就绪，再启动前端（5173）</li>
             <li>或分别运行 <code>启动后端.bat</code> 与 <code>启动前端.bat</code></li>
-            <li>浏览器访问 <code>http://localhost:5173</code>（本机）或 <code>http://192.168.68.36:5173</code>（局域网其他设备），登录后即可进入首页</li>
+            <li>浏览器访问 <code>http://localhost:5173</code>（本机）或 <code>http://192.168.68.5:5173</code>（局域网其他设备），登录后即可进入首页</li>
           </ol>
         </section>
 
