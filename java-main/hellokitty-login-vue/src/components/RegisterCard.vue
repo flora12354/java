@@ -93,9 +93,9 @@ async function handleSubmit() {
 .card {
   position: relative;
   width: 360px;
-  background: #ffffff;
+  background: var(--card);
   border-radius: 28px;
-  box-shadow: 0 20px 60px rgba(255, 105, 155, 0.25);
+  box-shadow: 0 20px 60px var(--shadow-3);
   padding: 90px 36px 36px;
   z-index: 2;
 }
@@ -103,14 +103,14 @@ async function handleSubmit() {
 .title {
   text-align: center;
   font-size: 24px;
-  color: #ff5c8a;
+  color: var(--brand);
   letter-spacing: 1px;
   margin-bottom: 6px;
 }
 .subtitle {
   text-align: center;
   font-size: 13px;
-  color: #c48ba2;
+  color: var(--text-3);
   margin-bottom: 28px;
 }
 
@@ -118,24 +118,24 @@ async function handleSubmit() {
 .field label {
   display: block;
   font-size: 13px;
-  color: #a96f88;
+  color: var(--text-2);
   margin-bottom: 6px;
   font-weight: 600;
 }
 .field input {
   width: 100%;
   padding: 12px 16px;
-  border: 2px solid #ffd9e6;
+  border: 2px solid var(--border);
   border-radius: 14px;
   font-size: 14px;
-  color: #5d3a47;
-  background: #fff8fb;
+  color: var(--text);
+  background: var(--surface-soft);
   outline: none;
   transition: border-color 0.2s, box-shadow 0.2s;
 }
 .field input:focus {
-  border-color: #ff8fb8;
-  box-shadow: 0 0 0 4px rgba(255, 143, 184, 0.18);
+  border-color: var(--brand-3);
+  box-shadow: 0 0 0 4px var(--ring);
 }
 
 .btn {
@@ -144,22 +144,22 @@ async function handleSubmit() {
   margin-top: 6px;
   border: none;
   border-radius: 14px;
-  background: linear-gradient(90deg, #ff7aa8, #ff5c8a);
-  color: #fff;
+  background: linear-gradient(90deg, var(--brand-2), var(--brand));
+  color: var(--on-brand);
   font-size: 16px;
   font-weight: 600;
   letter-spacing: 2px;
   cursor: pointer;
   transition: transform 0.15s, box-shadow 0.15s;
 }
-.btn:hover { transform: translateY(-2px); box-shadow: 0 10px 24px rgba(255, 92, 138, 0.35); }
+.btn:hover { transform: translateY(-2px); box-shadow: 0 10px 24px var(--glow-2); }
 .btn:active { transform: translateY(0); }
 
 .signup {
   text-align: center;
   font-size: 13px;
-  color: #c48ba2;
+  color: var(--text-3);
   margin-top: 20px;
 }
-.signup a { color: #ff5c8a; text-decoration: none; font-weight: 600; }
+.signup a { color: var(--brand); text-decoration: none; font-weight: 600; }
 </style>

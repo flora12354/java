@@ -80,15 +80,15 @@ async function handleLogin() {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, #3b4a6b 0%, #2c3757 100%);
+  background: linear-gradient(135deg, var(--admin-login-1) 0%, var(--admin-login-2) 100%);
   padding: 20px;
 }
 .login-box {
   width: 380px;
   max-width: 100%;
-  background: #ffffff;
+  background: var(--admin-card);
   border-radius: 22px;
-  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 20px 50px var(--admin-shadow-strong);
   padding: 40px 36px 30px;
   text-align: center;
 }
@@ -98,12 +98,12 @@ async function handleLogin() {
 }
 .box-title {
   font-size: 22px;
-  color: #2c3757;
+  color: var(--admin-text);
   margin-bottom: 6px;
 }
 .box-sub {
   font-size: 13px;
-  color: #8a93a8;
+  color: var(--admin-text-3);
   margin-bottom: 26px;
 }
 .field {
@@ -114,27 +114,27 @@ async function handleLogin() {
   display: block;
   font-size: 13px;
   font-weight: 600;
-  color: #4a5470;
+  color: var(--admin-text-2);
   margin-bottom: 6px;
 }
 .field input {
   width: 100%;
   box-sizing: border-box;
-  border: 2px solid #dde3f0;
+  border: 2px solid var(--admin-border);
   border-radius: 12px;
   padding: 11px 14px;
   font-size: 15px;
-  color: #2c3757;
+  color: var(--admin-text);
   outline: none;
   transition: border-color 0.2s, box-shadow 0.2s;
 }
 .field input:focus {
-  border-color: #5b7bd5;
-  box-shadow: 0 0 0 4px rgba(91, 123, 213, 0.15);
+  border-color: var(--admin-accent);
+  box-shadow: 0 0 0 4px var(--admin-focus);
 }
 .error {
   font-size: 13px;
-  color: #e05260;
+  color: var(--admin-danger);
   margin: 0 0 12px;
   text-align: left;
 }
@@ -142,8 +142,8 @@ async function handleLogin() {
   width: 100%;
   border: none;
   border-radius: 12px;
-  background: linear-gradient(90deg, #5b7bd5, #3b5cc4);
-  color: #fff;
+  background: linear-gradient(90deg, var(--admin-accent), var(--admin-accent-2));
+  color: var(--admin-on-accent);
   font-size: 16px;
   font-weight: 600;
   letter-spacing: 4px;
@@ -153,7 +153,7 @@ async function handleLogin() {
 }
 .login-btn:hover:not(:disabled) {
   transform: translateY(-1px);
-  box-shadow: 0 8px 20px rgba(59, 92, 196, 0.35);
+  box-shadow: 0 8px 20px var(--admin-glow);
 }
 .login-btn:disabled {
   opacity: 0.7;
@@ -163,11 +163,11 @@ async function handleLogin() {
   margin-top: 18px;
   border: none;
   background: transparent;
-  color: #8a93a8;
+  color: var(--admin-text-3);
   font-size: 13px;
   cursor: pointer;
 }
 .back-link:hover {
-  color: #5b7bd5;
+  color: var(--admin-accent);
 }
 </style>

@@ -19,6 +19,21 @@ public class User {
     private String username;
 
     /**
+     * 昵称（个人中心可修改，为空时前端用用户名兜底）
+     */
+    private String nickname;
+
+    /**
+     * 手机号（个人中心可修改）
+     */
+    private String phone;
+
+    /**
+     * 头像：前端压缩后的 base64 dataURL，或外部图片链接
+     */
+    private String avatar;
+
+    /**
      * 密码不返回给前端
      */
     @JsonIgnore
@@ -42,6 +57,30 @@ public class User {
 
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    public String getNickname() {
+        return nickname;
+    }
+
+    public void setNickname(String nickname) {
+        this.nickname = nickname;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public String getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
     }
 
     public String getPassword() {

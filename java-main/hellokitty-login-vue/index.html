@@ -3,7 +3,22 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#ffd3e4">
   <title>Hello Kitty 登录</title>
+  <script>
+    // 首屏前置应用主题，避免刷新时先闪一下默认配色
+    (function () {
+      try {
+        var t = localStorage.getItem('hk-theme') || 'light'
+        if (['light', 'rose', 'night'].indexOf(t) === -1) t = 'light'
+        document.documentElement.setAttribute('data-theme', t)
+        document.documentElement.style.colorScheme = t === 'night' ? 'dark' : 'light'
+        var colors = { light: '#ffd3e4', rose: '#f79bb8', night: '#1c1020' }
+        var meta = document.querySelector('meta[name="theme-color"]')
+        if (meta) meta.setAttribute('content', colors[t])
+      } catch (e) {}
+    })()
+  </script>
 </head>
 <body>
   <div id="app"></div>

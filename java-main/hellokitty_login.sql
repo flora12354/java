@@ -111,18 +111,42 @@ DROP TABLE IF EXISTS `user`;
 CREATE TABLE `user`  (
   `id` bigint NOT NULL AUTO_INCREMENT COMMENT '主键ID',
   `username` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '用户名',
+  `nickname` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '昵称',
+  `phone` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '手机号',
+  `avatar` mediumtext CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL COMMENT '头像（可存 base64 dataURL 或图片链接）',
   `password` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '密码（MD5加密存储，与 Spring DigestUtils 一致）',
   `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '注册时间',
   `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
   PRIMARY KEY (`id`) USING BTREE,
-  UNIQUE INDEX `uk_username`(`username` ASC) USING BTREE
+  UNIQUE INDEX `uk_username`(`username` ASC) USING BTREE,
+  INDEX `idx_phone`(`phone` ASC) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 4 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '用户表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of user
 -- ----------------------------
-INSERT INTO `user` VALUES (1, 'admin', 'e10adc3949ba59abbe56e057f20f883e', '2026-10-28 08:57:01', '2026-10-28 08:57:01');
-INSERT INTO `user` VALUES (2, '11', '9fe98f0a0450d5175bed30a2e76a69f6', '2026-10-28 09:38:27', '2026-10-28 09:38:27');
-INSERT INTO `user` VALUES (3, '77', '9fe98f0a0450d5175bed30a2e76a69f6', '2026-11-09 10:45:34', '2026-11-09 10:45:34');
+INSERT INTO `user` VALUES (1, 'admin', 'admin', NULL, NULL, 'e10adc3949ba59abbe56e057f20f883e', '2026-10-28 08:57:01', '2026-10-28 08:57:01');
+INSERT INTO `user` VALUES (2, '11', '11', NULL, NULL, '9fe98f0a0450d5175bed30a2e76a69f6', '2026-10-28 09:38:27', '2026-10-28 09:38:27');
+INSERT INTO `user` VALUES (3, '77', '77', NULL, NULL, '9fe98f0a0450d5175bed30a2e76a69f6', '2026-11-09 10:45:34', '2026-11-09 10:45:34');
+
+-- ----------------------------
+-- Table structure for user_address
+-- ----------------------------
+DROP TABLE IF EXISTS `user_address`;
+CREATE TABLE `user_address`  (
+  `id` bigint NOT NULL AUTO_INCREMENT COMMENT '主键ID',
+  `user_id` bigint NOT NULL COMMENT '所属用户ID',
+  `receiver` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '收货人姓名',
+  `phone` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '联系电话',
+  `province` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '省',
+  `city` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '市',
+  `district` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '区/县',
+  `detail` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '详细地址（街道门牌）',
+  `is_default` tinyint NOT NULL DEFAULT 0 COMMENT '是否默认地址：1 是 0 否',
+  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  PRIMARY KEY (`id`) USING BTREE,
+  INDEX `idx_user_id`(`user_id` ASC) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '用户收货地址表' ROW_FORMAT = DYNAMIC;
 
 SET FOREIGN_KEY_CHECKS = 1;

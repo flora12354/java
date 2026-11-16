@@ -86,11 +86,11 @@ const username = computed(() => user.username || '可爱用户')
   align-items: center;
   justify-content: space-between;
   gap: 16px;
-  background: rgba(255, 255, 255, 0.82);
+  background: var(--nav-glass);
   backdrop-filter: blur(8px);
-  border: 2px solid #ffd9e6;
+  border: 2px solid var(--border);
   border-radius: 22px;
-  box-shadow: 0 12px 30px rgba(255, 105, 155, 0.18);
+  box-shadow: 0 12px 30px var(--shadow-2);
   padding: 10px 20px;
 }
 .nav-left { display: flex; align-items: center; gap: 22px; }
@@ -99,8 +99,8 @@ const username = computed(() => user.username || '可爱用户')
   position: relative;
   width: 34px; height: 34px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #ff7aa8, #ff5c8a);
-  box-shadow: 0 4px 12px rgba(255, 92, 138, 0.35);
+  background: linear-gradient(135deg, var(--brand-2), var(--brand));
+  box-shadow: 0 4px 12px var(--glow-2);
   flex: none;
 }
 .brand-badge::before, .brand-badge::after {
@@ -121,12 +121,12 @@ const username = computed(() => user.username || '可爱用户')
   border-radius: 50%;
   transform: translate(-50%, -50%);
 }
-.brand-name { font-size: 18px; font-weight: 700; color: #ff5c8a; }
+.brand-name { font-size: 18px; font-weight: 700; color: var(--brand); }
 .nav-menu { display: flex; gap: 6px; }
 .nav-item {
   border: none;
   background: transparent;
-  color: #a96f88;
+  color: var(--text-2);
   font-size: 15px;
   font-weight: 600;
   padding: 8px 14px;
@@ -135,11 +135,11 @@ const username = computed(() => user.username || '可爱用户')
   position: relative;
   transition: background 0.18s, color 0.18s;
 }
-.nav-item:hover { background: #fff0f6; color: #ff5c8a; }
+.nav-item:hover { background: var(--surface-tint); color: var(--brand); }
 .nav-item.active {
-  background: linear-gradient(90deg, #ff7aa8, #ff5c8a);
-  color: #fff;
-  box-shadow: 0 6px 16px rgba(255, 92, 138, 0.3);
+  background: linear-gradient(90deg, var(--brand-2), var(--brand));
+  color: var(--on-brand);
+  box-shadow: 0 6px 16px var(--glow-1);
 }
 .nav-badge {
   position: absolute;
@@ -149,26 +149,26 @@ const username = computed(() => user.username || '可爱用户')
   height: 18px;
   padding: 0 5px;
   border-radius: 999px;
-  background: linear-gradient(135deg, #ff5c8a, #ff7aa8);
-  color: #fff;
+  background: linear-gradient(135deg, var(--brand), var(--brand-2));
+  color: var(--on-brand);
   font-size: 11px;
   font-weight: 700;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 2px 8px rgba(255, 92, 138, 0.45);
+  box-shadow: 0 2px 8px var(--glow-2);
 }
 .nav-item.active .nav-badge {
-  background: #fff;
-  color: #ff5c8a;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  background: var(--on-brand);
+  color: var(--brand);
+  box-shadow: 0 2px 8px var(--shadow-neutral);
 }
 .nav-right { display: flex; align-items: center; gap: 14px; }
-.greet { font-size: 14px; color: #5d3a47; font-weight: 600; }
+.greet { font-size: 14px; color: var(--text); font-weight: 600; }
 .logout-btn {
-  border: 2px solid #ffd9e6;
-  background: #fff8fb;
-  color: #ff5c8a;
+  border: 2px solid var(--border);
+  background: var(--surface-soft);
+  color: var(--brand);
   font-size: 13px;
   font-weight: 600;
   padding: 7px 16px;
@@ -176,7 +176,7 @@ const username = computed(() => user.username || '可爱用户')
   cursor: pointer;
   transition: background 0.18s;
 }
-.logout-btn:hover { background: #ffe3ee; }
+.logout-btn:hover { background: var(--tint-2); }
 
 .content { flex: 1 1 auto; padding: 6px 20px 30px; }
 .content-inner { max-width: 1080px; margin: 0 auto; }
@@ -186,23 +186,23 @@ const username = computed(() => user.username || '可爱用户')
   justify-content: space-between;
   margin: 14px 4px 18px;
 }
-.content-head h2 { font-size: 18px; color: #5d3a47; }
-.count { font-size: 13px; color: #c48ba2; }
+.content-head h2 { font-size: 18px; color: var(--text); }
+.count { font-size: 13px; color: var(--text-3); }
 
 .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 16px; }
 .good-card {
   position: relative;
-  background: #ffffff;
-  border: 2px solid #ffd9e6;
+  background: var(--card);
+  border: 2px solid var(--border);
   border-radius: 20px;
   padding: 22px 16px 14px;
   text-align: center;
-  box-shadow: 0 10px 26px rgba(255, 105, 155, 0.14);
+  box-shadow: 0 10px 26px var(--shadow-1);
   transition: transform 0.18s, box-shadow 0.18s;
   display: flex;
   flex-direction: column;
 }
-.good-card:hover { transform: translateY(-4px); box-shadow: 0 16px 34px rgba(255, 105, 155, 0.28); }
+.good-card:hover { transform: translateY(-4px); box-shadow: 0 16px 34px var(--shadow-3); }
 .fav-btn {
   position: absolute;
   top: 10px; right: 10px;
@@ -223,10 +223,10 @@ const username = computed(() => user.username || '可爱用户')
   border-radius: 14px;
   display: block;
 }
-.good-name { font-size: 14px; color: #5d3a47; font-weight: 600; margin-bottom: 6px; }
+.good-name { font-size: 14px; color: var(--text); font-weight: 600; margin-bottom: 6px; }
 .good-desc {
   font-size: 12px;
-  color: #b08898;
+  color: var(--text-6);
   line-height: 1.5;
   margin-bottom: 10px;
   display: -webkit-box;
@@ -235,20 +235,20 @@ const username = computed(() => user.username || '可爱用户')
   overflow: hidden;
 }
 .good-foot { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
-.good-price { font-size: 15px; font-weight: 700; color: #ff5c8a; }
+.good-price { font-size: 15px; font-weight: 700; color: var(--brand); }
 .good-tag {
   display: inline-block;
   font-size: 12px;
-  color: #ff5c8a;
-  background: #fff0f6;
+  color: var(--brand);
+  background: var(--surface-tint);
   border-radius: 999px;
   padding: 3px 12px;
 }
 .cart-add-btn {
   margin-top: auto;
-  border: 2px solid #ffd9e6;
-  background: #fff8fb;
-  color: #ff5c8a;
+  border: 2px solid var(--border);
+  background: var(--surface-soft);
+  color: var(--brand);
   font-size: 13px;
   font-weight: 600;
   padding: 8px 0;
@@ -258,24 +258,24 @@ const username = computed(() => user.username || '可爱用户')
   transition: background 0.18s, color 0.18s, transform 0.15s;
 }
 .cart-add-btn:hover {
-  background: linear-gradient(90deg, #ff7aa8, #ff5c8a);
+  background: linear-gradient(90deg, var(--brand-2), var(--brand));
   border-color: transparent;
-  color: #fff;
+  color: var(--on-brand);
   transform: translateY(-1px);
 }
-.empty { text-align: center; padding: 80px 0; color: #c48ba2; }
+.empty { text-align: center; padding: 80px 0; color: var(--text-3); }
 .empty-emoji { font-size: 52px; margin-bottom: 14px; }
 .go-btn {
   margin-top: 16px;
   border: none;
   border-radius: 999px;
-  background: linear-gradient(90deg, #ff7aa8, #ff5c8a);
-  color: #fff;
+  background: linear-gradient(90deg, var(--brand-2), var(--brand));
+  color: var(--on-brand);
   font-size: 14px;
   font-weight: 600;
   padding: 11px 28px;
   cursor: pointer;
   transition: transform 0.15s, box-shadow 0.15s;
 }
-.go-btn:hover { transform: translateY(-1px); box-shadow: 0 8px 20px rgba(255, 92, 138, 0.35); }
+.go-btn:hover { transform: translateY(-1px); box-shadow: 0 8px 20px var(--glow-2); }
 </style>

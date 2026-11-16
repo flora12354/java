@@ -233,7 +233,7 @@ onMounted(loadGoods)
 <style scoped>
 .admin-page {
   height: 100vh;
-  background: #f2f5fa;
+  background: var(--admin-bg);
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -246,7 +246,7 @@ onMounted(loadGoods)
 }
 /* ===== 顶部导航 ===== */
 .admin-navbar {
-  background: #2c3757;
+  background: var(--admin-nav);
   padding: 0 24px;
   flex: none;
 }
@@ -259,7 +259,7 @@ onMounted(loadGoods)
   justify-content: space-between;
 }
 .admin-brand {
-  color: #fff;
+  color: var(--admin-nav-text);
   font-size: 17px;
   font-weight: 700;
 }
@@ -269,21 +269,21 @@ onMounted(loadGoods)
   gap: 12px;
 }
 .admin-greet {
-  color: #b7c2e0;
+  color: var(--admin-nav-muted);
   font-size: 13px;
 }
 .admin-btn-ghost {
-  border: 1px solid #4a587e;
+  border: 1px solid var(--admin-nav-border);
   background: transparent;
-  color: #d5ddf2;
+  color: var(--admin-nav-muted);
   font-size: 13px;
   padding: 6px 14px;
   border-radius: 8px;
   cursor: pointer;
   transition: background 0.18s;
 }
-.admin-btn-ghost:hover { background: rgba(255, 255, 255, 0.1); }
-.admin-btn-ghost.danger:hover { background: rgba(224, 82, 96, 0.25); }
+.admin-btn-ghost:hover { background: var(--admin-hover); }
+.admin-btn-ghost.danger:hover { background: var(--admin-danger-hover); }
 
 /* ===== 工具栏 ===== */
 .toolbar {
@@ -306,16 +306,16 @@ onMounted(loadGoods)
 }
 .toolbar-search input[type="text"],
 .toolbar-search select {
-  border: 1px solid #d5dbe8;
+  border: 1px solid var(--admin-border);
   border-radius: 10px;
   padding: 9px 14px;
   font-size: 14px;
-  color: #2c3757;
+  color: var(--admin-text);
   outline: none;
-  background: #fff;
+  background: var(--admin-card);
   min-width: 180px;
 }
-.toolbar-search input:focus { border-color: #5b7bd5; }
+.toolbar-search input:focus { border-color: var(--admin-accent); }
 
 .btn {
   border: none;
@@ -327,22 +327,22 @@ onMounted(loadGoods)
   transition: transform 0.15s, box-shadow 0.15s;
 }
 .btn.primary {
-  background: linear-gradient(90deg, #5b7bd5, #3b5cc4);
-  color: #fff;
+  background: linear-gradient(90deg, var(--admin-accent), var(--admin-accent-2));
+  color: var(--admin-on-accent);
 }
-.btn.primary:hover { transform: translateY(-1px); box-shadow: 0 6px 16px rgba(59, 92, 196, 0.3); }
+.btn.primary:hover { transform: translateY(-1px); box-shadow: 0 6px 16px var(--admin-glow); }
 .btn.ghost {
-  background: #fff;
-  border: 1px solid #d5dbe8;
-  color: #4a5470;
+  background: var(--admin-card);
+  border: 1px solid var(--admin-border);
+  color: var(--admin-text-2);
 }
-.btn.ghost:hover { background: #f2f5fa; }
+.btn.ghost:hover { background: var(--admin-bg); }
 .btn.danger {
-  background: #fff;
-  border: 1px solid #f0b9bf;
-  color: #e05260;
+  background: var(--admin-card);
+  border: 1px solid var(--admin-danger-border);
+  color: var(--admin-danger);
 }
-.btn.danger:hover { background: #fdf0f1; }
+.btn.danger:hover { background: var(--admin-danger-soft); }
 .btn.small { padding: 5px 12px; font-size: 13px; border-radius: 8px; margin-right: 6px; }
 .btn.small.danger { margin-right: 0; }
 .add-btn { flex: none; }
@@ -358,14 +358,14 @@ onMounted(loadGoods)
 .goods-table {
   width: 100%;
   border-collapse: collapse;
-  background: #fff;
+  background: var(--admin-card);
   border-radius: 14px;
   overflow: hidden;
-  box-shadow: 0 4px 18px rgba(44, 55, 87, 0.08);
+  box-shadow: 0 4px 18px var(--admin-shadow);
 }
 .goods-table th {
-  background: #eef2fa;
-  color: #4a5470;
+  background: var(--admin-head);
+  color: var(--admin-text-2);
   font-size: 13px;
   text-align: left;
   padding: 12px 14px;
@@ -374,19 +374,19 @@ onMounted(loadGoods)
 .goods-table td {
   padding: 12px 14px;
   font-size: 14px;
-  color: #2c3757;
-  border-top: 1px solid #eef1f7;
+  color: var(--admin-text);
+  border-top: 1px solid var(--admin-row-border);
   vertical-align: top;
 }
 .emoji-cell { font-size: 22px; }
 .name-cell { font-weight: 600; }
-.desc-cell { color: #6b7590; font-size: 13px; line-height: 1.5; }
-.time-cell { color: #8a93a8; font-size: 12px; white-space: nowrap; }
-.price-cell { font-weight: 700; color: #e05260; white-space: nowrap; }
+.desc-cell { color: var(--admin-text-4); font-size: 13px; line-height: 1.5; }
+.time-cell { color: var(--admin-text-3); font-size: 12px; white-space: nowrap; }
+.price-cell { font-weight: 700; color: var(--admin-danger); white-space: nowrap; }
 .tag {
   display: inline-block;
-  background: #eef2fa;
-  color: #3b5cc4;
+  background: var(--admin-head);
+  color: var(--admin-accent-2);
   font-size: 12px;
   padding: 3px 12px;
   border-radius: 999px;
@@ -394,7 +394,7 @@ onMounted(loadGoods)
 }
 .table-tip {
   text-align: center;
-  color: #8a93a8;
+  color: var(--admin-text-3);
   padding: 40px 0 !important;
 }
 
@@ -402,7 +402,7 @@ onMounted(loadGoods)
 .modal-mask {
   position: fixed;
   inset: 0;
-  background: rgba(15, 22, 40, 0.45);
+  background: var(--admin-overlay);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -412,15 +412,15 @@ onMounted(loadGoods)
 .modal {
   width: 480px;
   max-width: 100%;
-  background: #fff;
+  background: var(--admin-card);
   border-radius: 16px;
   padding: 26px 26px 20px;
-  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.25);
+  box-shadow: 0 20px 50px var(--admin-shadow-strong);
 }
 .modal-title {
   margin: 0 0 18px;
   font-size: 18px;
-  color: #2c3757;
+  color: var(--admin-text);
 }
 .modal-body { max-height: 55vh; overflow-y: auto; }
 .m-field { margin-bottom: 14px; }
@@ -428,26 +428,26 @@ onMounted(loadGoods)
   display: block;
   font-size: 13px;
   font-weight: 600;
-  color: #4a5470;
+  color: var(--admin-text-2);
   margin-bottom: 6px;
 }
 .m-field input,
 .m-field textarea {
   width: 100%;
   box-sizing: border-box;
-  border: 1px solid #d5dbe8;
+  border: 1px solid var(--admin-border);
   border-radius: 10px;
   padding: 9px 12px;
   font-size: 14px;
-  color: #2c3757;
+  color: var(--admin-text);
   outline: none;
   resize: vertical;
 }
 .m-field input:focus,
-.m-field textarea:focus { border-color: #5b7bd5; }
+.m-field textarea:focus { border-color: var(--admin-accent); }
 .m-row { display: flex; gap: 12px; }
 .m-row .m-field { flex: 1; }
-.modal-error { font-size: 13px; color: #e05260; margin: 0 0 10px; }
+.modal-error { font-size: 13px; color: var(--admin-danger); margin: 0 0 10px; }
 .modal-foot {
   display: flex;
   justify-content: flex-end;

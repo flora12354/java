@@ -16,18 +16,41 @@ USE hellokitty_login;
 CREATE TABLE IF NOT EXISTS `user` (
   id          BIGINT       NOT NULL AUTO_INCREMENT COMMENT '主键ID',
   username    VARCHAR(50)  NOT NULL                COMMENT '用户名',
+  nickname    VARCHAR(50)  NULL     DEFAULT NULL    COMMENT '昵称',
+  phone       VARCHAR(20)  NULL     DEFAULT NULL    COMMENT '手机号',
+  avatar      MEDIUMTEXT   NULL                      COMMENT '头像（可存 base64 dataURL 或图片链接）',
   password    VARCHAR(64)  NOT NULL                COMMENT '密码（MD5加密存储，与 Spring DigestUtils 一致）',
   create_time DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '注册时间',
   update_time DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
   PRIMARY KEY (id),
-  UNIQUE KEY uk_username (username)
+  UNIQUE KEY uk_username (username),
+  KEY idx_phone (phone)
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4
   COMMENT = '用户表';
 
 -- 测试账号：admin / 123456（密码为 MD5 加密后的值）
-INSERT IGNORE INTO `user` (username, password)
-VALUES ('admin', MD5('123456'));
+INSERT IGNORE INTO `user` (username, nickname, password)
+VALUES ('admin', 'admin', MD5('123456'));
+
+-- ---------- 用户收货地址表（个人中心 - 收货地址管理）----------
+CREATE TABLE IF NOT EXISTS `user_address` (
+  id          BIGINT       NOT NULL AUTO_INCREMENT COMMENT '主键ID',
+  user_id     BIGINT       NOT NULL                COMMENT '所属用户ID',
+  receiver    VARCHAR(50)  NOT NULL                COMMENT '收货人姓名',
+  phone       VARCHAR(20)  NOT NULL                COMMENT '联系电话',
+  province    VARCHAR(50)  NULL DEFAULT NULL       COMMENT '省',
+  city        VARCHAR(50)  NULL DEFAULT NULL       COMMENT '市',
+  district    VARCHAR(50)  NULL DEFAULT NULL       COMMENT '区/县',
+  detail      VARCHAR(200) NOT NULL                COMMENT '详细地址（街道门牌）',
+  is_default  TINYINT      NOT NULL DEFAULT 0      COMMENT '是否默认地址：1 是 0 否',
+  create_time DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  update_time DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  PRIMARY KEY (id),
+  KEY idx_user_id (user_id)
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8mb4
+  COMMENT = '用户收货地址表';
 
 -- ---------- 商品表（支撑首页搜索 /api/search）----------
 CREATE TABLE IF NOT EXISTS `goods` (

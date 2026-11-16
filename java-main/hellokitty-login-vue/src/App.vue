@@ -2,6 +2,7 @@
   <div class="page">
     <FloatingDecorations :count="14" />
     <router-view />
+    <ThemeSwitcher />
     <ToastMessage :message="toast.message" :visible="toast.visible" />
   </div>
 </template>
@@ -9,6 +10,7 @@
 <script setup>
 import { reactive, provide } from 'vue'
 import FloatingDecorations from './components/FloatingDecorations.vue'
+import ThemeSwitcher from './components/ThemeSwitcher.vue'
 import ToastMessage from './components/ToastMessage.vue'
 
 const toast = reactive({ message: '', visible: false })

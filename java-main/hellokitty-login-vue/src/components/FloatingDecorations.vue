@@ -18,7 +18,8 @@ const props = defineProps({
   count: { type: Number, default: 14 }
 })
 
-const colors = ['#ff8fb8', '#ffb3cd', '#ff6f9c', '#ffcfe0']
+// 装饰色跟随主题（见 styles/theme.css 中的 --deco-*）
+const colors = ['var(--deco-1)', 'var(--deco-2)', 'var(--deco-3)', 'var(--deco-4)']
 
 const items = computed(() =>
   Array.from({ length: props.count }, (_, i) => {
@@ -52,7 +53,7 @@ const items = computed(() =>
 
 .float-bow {
   position: absolute;
-  opacity: 0.55;
+  opacity: var(--deco-opacity);
   animation: floaty linear infinite;
 }
 .float-bow::before,
@@ -61,7 +62,7 @@ const items = computed(() =>
   position: absolute;
   width: 22px;
   height: 18px;
-  background: var(--c, #ff8fb8);
+  background: var(--c, var(--brand-3));
   border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
 }
 .float-bow::before { left: 0; transform: rotate(-25deg); }
@@ -72,7 +73,7 @@ const items = computed(() =>
   top: 50%;
   width: 12px;
   height: 12px;
-  background: var(--c, #ff8fb8);
+  background: var(--c, var(--brand-3));
   border-radius: 50%;
   transform: translate(-50%, -50%);
   z-index: 1;
@@ -81,8 +82,8 @@ const items = computed(() =>
 .float-dot {
   position: absolute;
   border-radius: 50%;
-  background: #ffc2d8;
-  opacity: 0.5;
+  background: var(--deco-2);
+  opacity: calc(var(--deco-opacity) * 0.9);
   animation: floaty linear infinite;
 }
 

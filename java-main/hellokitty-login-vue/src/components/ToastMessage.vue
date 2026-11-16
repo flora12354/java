@@ -15,12 +15,12 @@ defineProps({
   top: 28px;
   left: 50%;
   transform: translate(-50%, -80px);
-  background: #ff5c8a;
-  color: #fff;
+  background: var(--brand);
+  color: var(--on-brand);
   padding: 12px 26px;
   border-radius: 30px;
   font-size: 14px;
-  box-shadow: 0 10px 30px rgba(255, 92, 138, 0.4);
+  box-shadow: 0 10px 30px var(--glow-2);
   transition: transform 0.35s ease;
   z-index: 99;
 }
