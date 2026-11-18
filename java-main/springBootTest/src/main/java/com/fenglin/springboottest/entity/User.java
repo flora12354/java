@@ -29,7 +29,7 @@ public class User {
     private String phone;
 
     /**
-     * 头像：前端压缩后的 base64 dataURL，或外部图片链接
+     * 头像：前端压缩后的 base64 dataURL、外部图片链接，或 emoji: 开头的预设头像
      */
     private String avatar;
 

@@ -13,6 +13,9 @@
             <button class="nav-item" @click="router.push('/favorites')">
               💗 我的收藏<span class="nav-badge" v-if="store.favorites.length">{{ store.favorites.length }}</span>
             </button>
+            <button class="nav-item" @click="router.push('/orders')">
+              🧾 我的订单
+            </button>
             <button class="nav-item active" @click="router.push('/cart')">
               🛒 购物车<span class="nav-badge" v-if="store.cartCount()">{{ store.cartCount() }}</span>
             </button>
@@ -73,12 +76,64 @@
       </div>
     </main>
 
-    <!-- 结算成功弹层 -->
+    <!-- 结算弹层：选收货地址 -->
+    <div class="toast-mask" v-if="checkoutVisible" @click.self="checkoutVisible = false">
+      <div class="checkout-box">
+        <h3 class="checkout-title">确认订单</h3>
+        <div class="checkout-body">
+          <p class="sec-label">收货地址</p>
+          <label
+            v-for="a in addressList" :key="a.id"
+            class="addr-row" :class="{ on: selectedAddressId === String(a.id) }"
+          >
+            <input type="radio" name="addr" :value="String(a.id)" v-model="selectedAddressId">
+            <span class="addr-text">
+              <b>{{ a.receiver }}</b> {{ a.phone }}<br>
+              <span class="addr-detail">{{ addrFull(a) }}</span>
+              <span class="addr-default" v-if="a.isDefault">默认</span>
+            </span>
+          </label>
+          <label class="addr-row" :class="{ on: selectedAddressId === 'manual' }">
+            <input type="radio" name="addr" value="manual" v-model="selectedAddressId">
+            <span class="addr-text">手动填写地址</span>
+          </label>
+          <div class="manual-box" v-if="selectedAddressId === 'manual'">
+            <input v-model.trim="manual.receiver" type="text" placeholder="收货人">
+            <input v-model.trim="manual.phone" type="text" placeholder="联系电话">
+            <input v-model.trim="manual.address" type="text" placeholder="收货地址（省市区 + 详细地址）">
+          </div>
+          <p class="addr-empty" v-if="!addressList.length">还没有收货地址，可以先去「个人中心 → 收货地址」添加，或选择手动填写。</p>
+
+          <p class="sec-label">商品清单（{{ store.cart.length }} 种）</p>
+          <div class="mini-list">
+            <div class="mini-row" v-for="it in store.cart" :key="it.id">
+              <span class="mini-emoji">{{ it.emoji }}</span>
+              <span class="mini-name">{{ it.name }} × {{ it.qty }}</span>
+              <span class="mini-price">¥{{ (Number(it.price) * it.qty).toFixed(2) }}</span>
+            </div>
+          </div>
+          <div class="checkout-total">合计：<b>¥{{ store.cartTotal().toFixed(2) }}</b></div>
+          <p class="checkout-error" v-if="checkoutError">{{ checkoutError }}</p>
+        </div>
+        <div class="checkout-foot">
+          <button class="ghost-btn" @click="checkoutVisible = false">取消</button>
+          <button class="primary-btn" :disabled="submitting" @click="submitOrder">
+            {{ submitting ? '提交中…' : '提交订单' }}
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 下单成功弹层 -->
     <div class="toast-mask" v-if="paid" @click="paid = false">
       <div class="toast-box">
         <div class="toast-emoji">🎉</div>
-        <p class="toast-text">下单成功！共 {{ paidCount }} 件，金额 ¥{{ paidTotal }}</p>
-        <p class="toast-sub">这是演示结算，祝你购物愉快～</p>
+        <p class="toast-text">下单成功！</p>
+        <p class="toast-sub">订单号 {{ paidOrderNo }} · 共 {{ paidCount }} 件，金额 ¥{{ paidTotal }}</p>
+        <div class="paid-actions">
+          <button class="ghost-btn" @click="paid = false">继续逛逛</button>
+          <button class="primary-btn" @click="router.push('/orders')">查看我的订单</button>
+        </div>
       </div>
     </div>
   </div>
@@ -88,24 +143,78 @@
 import { ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { store } from '../api/store'
+import { listAddresses } from '../api/user'
+import { createOrderApi } from '../api/orders'
 
 const router = useRouter()
 const user = JSON.parse(localStorage.getItem('user') || '{}')
 const username = computed(() => user.username || '可爱用户')
 
+// ===== 结算 =====
+const checkoutVisible = ref(false)
+const checkoutError = ref('')
+const submitting = ref(false)
+const addressList = ref([])
+const selectedAddressId = ref('')
+const manual = ref({ receiver: '', phone: '', address: '' })
+
 const paid = ref(false)
 const paidCount = ref(0)
 const paidTotal = ref('0.00')
+const paidOrderNo = ref('')
 
 function clearAll() {
   if (window.confirm('确定清空购物车吗？')) store.clearCart()
 }
 
-function checkout() {
-  paidCount.value = store.cartCount()
-  paidTotal.value = store.cartTotal().toFixed(2)
-  store.clearCart()
-  paid.value = true
+function addrFull(a) {
+  return [a.province, a.city, a.district, a.detail].filter(Boolean).join(' ')
+}
+
+async function checkout() {
+  checkoutError.value = ''
+  checkoutVisible.value = true
+  const res = await listAddresses()
+  addressList.value = (res && res.ok && Array.isArray(res.data)) ? res.data : []
+  const def = addressList.value.find(a => a.isDefault)
+  selectedAddressId.value = def ? String(def.id) : (addressList.value.length ? String(addressList.value[0].id) : 'manual')
+}
+
+async function submitOrder() {
+  checkoutError.value = ''
+  const items = store.cart.map(i => ({
+    goodsId: i.id,
+    goodsName: i.name,
+    emoji: i.emoji || '',
+    price: Number(i.price),
+    qty: i.qty || 1
+  }))
+  const payload = { userId: user.id, items }
+  if (selectedAddressId.value !== 'manual') {
+    payload.addressId = selectedAddressId.value
+  } else {
+    payload.receiver = manual.value.receiver
+    payload.phone = manual.value.phone
+    payload.address = manual.value.address
+  }
+  submitting.value = true
+  try {
+    const res = await createOrderApi(payload)
+    if (res && res.code === 200 && res.data) {
+      paidCount.value = store.cartCount()
+      paidTotal.value = store.cartTotal().toFixed(2)
+      paidOrderNo.value = res.data.orderNo || '-'
+      store.clearCart()
+      checkoutVisible.value = false
+      paid.value = true
+    } else {
+      checkoutError.value = (res && res.msg) || '下单失败，请稍后重试'
+    }
+  } catch (e) {
+    checkoutError.value = e.message || '网络请求失败'
+  } finally {
+    submitting.value = false
+  }
 }
 </script>
 
@@ -359,4 +468,103 @@ function checkout() {
 .toast-emoji { font-size: 48px; margin-bottom: 12px; }
 .toast-text { font-size: 16px; color: var(--text); font-weight: 700; margin-bottom: 6px; }
 .toast-sub { font-size: 13px; color: var(--text-3); }
+.paid-actions { display: flex; gap: 12px; justify-content: center; margin-top: 18px; }
+
+/* ===== 结算弹层 ===== */
+.checkout-box {
+  width: 520px;
+  max-width: calc(100vw - 40px);
+  background: var(--card);
+  border-radius: 22px;
+  padding: 24px 26px 20px;
+  box-shadow: 0 20px 50px var(--shadow-neutral-strong);
+  max-height: 86vh;
+  display: flex;
+  flex-direction: column;
+}
+.checkout-title { margin: 0 0 14px; font-size: 18px; color: var(--text); }
+.checkout-body { overflow-y: auto; min-height: 0; }
+.sec-label { font-size: 13px; font-weight: 700; color: var(--text-2); margin: 8px 0 8px; }
+.addr-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  border: 2px solid var(--border);
+  border-radius: 14px;
+  padding: 10px 14px;
+  margin-bottom: 8px;
+  cursor: pointer;
+  transition: border-color 0.18s, background 0.18s;
+}
+.addr-row.on { border-color: var(--brand-3); background: var(--surface-tint); }
+.addr-row input { margin-top: 4px; accent-color: var(--brand); }
+.addr-text { font-size: 13px; color: var(--text); line-height: 1.5; }
+.addr-detail { color: var(--text-6); font-size: 12px; }
+.addr-default {
+  display: inline-block;
+  margin-left: 8px;
+  font-size: 11px;
+  color: var(--brand);
+  background: var(--surface-tint);
+  border-radius: 999px;
+  padding: 1px 8px;
+}
+.manual-box { display: flex; flex-direction: column; gap: 8px; margin: 8px 0 4px; }
+.manual-box input {
+  border: 2px solid var(--border);
+  border-radius: 12px;
+  padding: 9px 12px;
+  font-size: 13px;
+  color: var(--text);
+  background: transparent;
+  outline: none;
+}
+.manual-box input:focus { border-color: var(--brand-3); }
+.addr-empty { font-size: 12px; color: var(--text-3); margin: 6px 0; }
+.mini-list { border: 2px dashed var(--border); border-radius: 14px; padding: 10px 14px; }
+.mini-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 5px 0;
+  font-size: 13px;
+  color: var(--text);
+}
+.mini-emoji { font-size: 20px; }
+.mini-name { flex: 1; }
+.mini-price { font-weight: 700; color: var(--brand); }
+.checkout-total { text-align: right; font-size: 14px; color: var(--text); margin: 12px 0 4px; }
+.checkout-total b { font-size: 20px; color: var(--brand); }
+.checkout-error { font-size: 13px; color: var(--danger-strong); margin: 6px 0; }
+.checkout-foot {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  padding-top: 14px;
+}
+.ghost-btn {
+  border: 2px solid var(--border);
+  background: var(--surface-soft);
+  color: var(--text-2);
+  font-size: 14px;
+  font-weight: 600;
+  padding: 10px 20px;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: background 0.18s;
+}
+.ghost-btn:hover { background: var(--surface-tint); }
+.primary-btn {
+  border: none;
+  background: linear-gradient(90deg, var(--brand-2), var(--brand));
+  color: var(--on-brand);
+  font-size: 14px;
+  font-weight: 700;
+  padding: 10px 24px;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+.primary-btn:hover { transform: translateY(-1px); box-shadow: 0 8px 20px var(--glow-2); }
+.primary-btn:disabled { opacity: 0.6; cursor: not-allowed; }
 </style>

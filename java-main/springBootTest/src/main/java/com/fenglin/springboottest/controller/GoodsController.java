@@ -38,6 +38,18 @@ public class GoodsController {
     }
 
     /**
+     * 商品详情：GET /api/goods/{id}
+     */
+    @GetMapping("/{id}")
+    public Result<Goods> detail(@PathVariable Long id) {
+        Goods goods = goodsService.getById(id);
+        if (goods == null) {
+            return Result.fail("商品不存在或已下架");
+        }
+        return Result.success(goods);
+    }
+
+    /**
      * 新增商品：POST /api/goods
      */
     @PostMapping

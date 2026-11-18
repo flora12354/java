@@ -131,7 +131,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         if (avatar.length() > MAX_AVATAR_LENGTH) {
             return Result.fail("头像图片过大，请选择 2MB 以内的图片");
         }
-        if (!avatar.startsWith("data:image/") && !avatar.startsWith("http://") && !avatar.startsWith("https://")) {
+        // 支持上传图片（dataURL）、图片链接，以及前端预设 emoji 头像（emoji:🐱）
+        if (!avatar.startsWith("data:image/") && !avatar.startsWith("http://")
+                && !avatar.startsWith("https://") && !avatar.startsWith("emoji:")) {
             return Result.fail("头像格式不正确");
         }
 

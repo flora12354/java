@@ -13,7 +13,7 @@
             <button class="nav-item active" @click="router.push('/favorites')">
               💗 我的收藏<span class="nav-badge" v-if="store.favorites.length">{{ store.favorites.length }}</span>
             </button>
-            <button class="nav-item" @click="router.push('/cart')">
+            <button class="nav-item" @click="router.push('/cart')" data-cart-fly-target>
               🛒 购物车<span class="nav-badge" v-if="store.cartCount()">{{ store.cartCount() }}</span>
             </button>
           </nav>
@@ -32,9 +32,33 @@
           <span class="count">{{ store.favorites.length }} 件心水好物</span>
         </div>
 
+        <!-- 批量操作栏 -->
+        <div class="batch-bar" v-if="store.favorites.length">
+          <label class="check-all">
+            <input type="checkbox" :checked="allChecked" @change="toggleCheckAll">
+            全选
+          </label>
+          <span class="batch-count">已选 {{ selectedIds.length }} 件</span>
+          <div class="batch-actions">
+            <button class="batch-btn primary" :disabled="!selectedIds.length || batchAdding" @click="batchAddToCart">
+              {{ batchAdding ? '加入中…' : '🛒 批量加入购物车' }}
+            </button>
+            <button class="batch-btn danger" :disabled="!selectedIds.length" @click="batchRemove">
+              💔 移除收藏
+            </button>
+          </div>
+        </div>
+
         <div class="grid" v-if="store.favorites.length">
-          <div class="good-card" v-for="item in store.favorites" :key="item.id">
-            <button class="fav-btn on" title="取消收藏" @click="store.toggleFavorite(item)">💖</button>
+          <div class="good-card" v-for="item in store.favorites" :key="item.id" :class="{ selected: isChecked(item.id) }">
+            <label class="pick-box" @click.stop>
+              <input type="checkbox" :checked="isChecked(item.id)" @change="toggleCheck(item.id)">
+            </label>
+            <button
+              class="fav-btn on"
+              title="取消收藏"
+              @click.stop="removeFav(item, $event)"
+            >💖</button>
             <div class="good-emoji">
               <img v-if="item.image" :src="item.image" :alt="item.name" class="good-img" loading="lazy">
               <template v-else>{{ item.emoji }}</template>
@@ -45,7 +69,7 @@
               <span class="good-price">¥{{ Number(item.price).toFixed(2) }}</span>
               <span class="good-tag">{{ item.tag }}</span>
             </div>
-            <button class="cart-add-btn" @click="store.addToCart(item)">＋ 加入购物车</button>
+            <button class="cart-add-btn" @click="addOne(item, $event)">＋ 加入购物车</button>
           </div>
         </div>
 
@@ -56,17 +80,96 @@
         </div>
       </div>
     </main>
+
+    <ToastMessage :message="toast" :visible="!!toast" />
   </div>
 </template>
 
 <script setup>
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { store } from '../api/store'
+import { heartBurst, beatHeart, flyToCart } from '../utils/effects'
+import ToastMessage from '../components/ToastMessage.vue'
 
 const router = useRouter()
 const user = JSON.parse(localStorage.getItem('user') || '{}')
 const username = computed(() => user.username || '可爱用户')
+
+// ===== 批量选择 =====
+const selectedIds = ref([])
+const batchAdding = ref(false)
+const toast = ref('')
+let toastTimer = null
+function showToast(msg) {
+  toast.value = msg
+  clearTimeout(toastTimer)
+  toastTimer = setTimeout(() => (toast.value = ''), 2000)
+}
+
+function isChecked(id) {
+  return selectedIds.value.includes(String(id))
+}
+
+function toggleCheck(id) {
+  const key = String(id)
+  const i = selectedIds.value.indexOf(key)
+  if (i >= 0) selectedIds.value.splice(i, 1)
+  else selectedIds.value.push(key)
+}
+
+const allChecked = computed(() =>
+  store.favorites.length > 0 && store.favorites.every(i => isChecked(i.id))
+)
+
+function toggleCheckAll() {
+  if (allChecked.value) {
+    selectedIds.value = []
+  } else {
+    selectedIds.value = store.favorites.map(i => String(i.id))
+  }
+}
+
+// ===== 取消收藏 =====
+function removeFav(item, e) {
+  // 收藏页的爱心是取消操作：给一个粉色闪光告别动画
+  if (e && e.currentTarget) heartBurst(e.currentTarget)
+  store.toggleFavorite(item)
+  selectedIds.value = selectedIds.value.filter(k => k !== String(item.id))
+}
+
+// ===== 加入购物车 =====
+function addOne(item, e) {
+  store.addToCart(item)
+  if (e && e.currentTarget) flyToCart(e.currentTarget, item)
+}
+
+async function batchAddToCart() {
+  if (!selectedIds.value.length) return
+  batchAdding.value = true
+  const items = store.favorites.filter(i => isChecked(i.id))
+  // 逐个加入并播放飞入动画（每个间隔 90ms，形成连飞效果）
+  for (const it of items) {
+    store.addToCart(it)
+  }
+  const source = document.querySelector('.batch-btn.primary')
+  items.forEach((it, idx) => {
+    setTimeout(() => flyToCart(source || document.body, it), idx * 90)
+  })
+  setTimeout(() => {
+    batchAdding.value = false
+    showToast(`已把 ${items.length} 件好物加入购物车 🛒`)
+    selectedIds.value = []
+  }, items.length * 90 + 500)
+}
+
+function batchRemove() {
+  if (!selectedIds.value.length) return
+  if (!window.confirm(`确定移除选中的 ${selectedIds.value.length} 件收藏吗？`)) return
+  store.favorites = store.favorites.filter(i => !isChecked(i.id))
+  store.persist()
+  selectedIds.value = []
+}
 </script>
 
 <style scoped>
@@ -184,10 +287,57 @@ const username = computed(() => user.username || '可爱用户')
   display: flex;
   align-items: baseline;
   justify-content: space-between;
-  margin: 14px 4px 18px;
+  margin: 14px 4px 12px;
 }
 .content-head h2 { font-size: 18px; color: var(--text); }
 .count { font-size: 13px; color: var(--text-3); }
+
+/* ===== 批量操作栏 ===== */
+.batch-bar {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+  background: var(--card);
+  border: 2px solid var(--border);
+  border-radius: 16px;
+  padding: 10px 16px;
+  margin: 0 4px 16px;
+  box-shadow: 0 8px 22px var(--shadow-1);
+}
+.check-all {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text);
+  cursor: pointer;
+}
+.check-all input { width: 16px; height: 16px; accent-color: var(--brand); cursor: pointer; }
+.batch-count { font-size: 13px; color: var(--text-3); }
+.batch-actions { margin-left: auto; display: flex; gap: 10px; }
+.batch-btn {
+  border: 2px solid var(--border);
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 8px 18px;
+  cursor: pointer;
+  transition: background 0.18s, color 0.18s, transform 0.15s, opacity 0.15s;
+}
+.batch-btn.primary {
+  background: linear-gradient(90deg, var(--brand-2), var(--brand));
+  border-color: transparent;
+  color: var(--on-brand);
+}
+.batch-btn.primary:hover:not(:disabled) { transform: translateY(-1px); box-shadow: 0 6px 16px var(--glow-2); }
+.batch-btn.danger {
+  background: var(--surface-soft);
+  color: var(--admin-danger, #e05666);
+}
+.batch-btn.danger:hover:not(:disabled) { background: var(--surface-tint); }
+.batch-btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
 .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 16px; }
 .good-card {
@@ -198,11 +348,21 @@ const username = computed(() => user.username || '可爱用户')
   padding: 22px 16px 14px;
   text-align: center;
   box-shadow: 0 10px 26px var(--shadow-1);
-  transition: transform 0.18s, box-shadow 0.18s;
+  transition: transform 0.18s, box-shadow 0.18s, border-color 0.18s;
   display: flex;
   flex-direction: column;
 }
 .good-card:hover { transform: translateY(-4px); box-shadow: 0 16px 34px var(--shadow-3); }
+.good-card.selected { border-color: var(--brand-3); }
+.pick-box {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  display: inline-flex;
+  align-items: center;
+  cursor: pointer;
+}
+.pick-box input { width: 17px; height: 17px; accent-color: var(--brand); cursor: pointer; }
 .fav-btn {
   position: absolute;
   top: 10px; right: 10px;
@@ -253,8 +413,8 @@ const username = computed(() => user.username || '可爱用户')
   font-weight: 600;
   padding: 8px 0;
   border-radius: 12px;
-  cursor: pointer;
   width: 100%;
+  cursor: pointer;
   transition: background 0.18s, color 0.18s, transform 0.15s;
 }
 .cart-add-btn:hover {

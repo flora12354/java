@@ -30,3 +30,58 @@ export function goodsUpdateApi(goods) {
 export function goodsDeleteApi(id) {
   return del(`/goods/${id}`)
 }
+
+// ===== 订单管理 =====
+
+// 订单列表：GET /api/admin/orders?keyword=xxx&status=PAID
+export function orderListApi(keyword = '', status = '') {
+  const qs = new URLSearchParams()
+  if (keyword) qs.append('keyword', keyword)
+  if (status && status !== '全部') qs.append('status', status)
+  const q = qs.toString()
+  return get('/admin/orders' + (q ? '?' + q : ''))
+}
+
+// 发货：PUT /api/admin/order/status（PAID → SHIPPED）
+export function orderShipApi(id) {
+  return put('/admin/order/status', { id, status: 'SHIPPED' })
+}
+
+// 确认完成：PUT /api/admin/order/status（SHIPPED → COMPLETED）
+export function orderCompleteApi(id) {
+  return put('/admin/order/status', { id, status: 'COMPLETED' })
+}
+
+// 处理退款：PUT /api/admin/order/refund（approve=true 通过退款，false 驳回）
+export function orderRefundApi(id, approve) {
+  return put('/admin/order/refund', { id, approve })
+}
+
+// ===== 用户管理 =====
+
+// 注册用户列表：GET /api/admin/users?keyword=xxx
+export function userListApi(keyword = '') {
+  const q = keyword ? '?keyword=' + encodeURIComponent(keyword) : ''
+  return get('/admin/users' + q)
+}
+
+// ===== 评价管理 =====
+
+// 评价列表：GET /api/admin/reviews?keyword=xxx&status=PENDING
+export function reviewListApi(keyword = '', status = '') {
+  const qs = new URLSearchParams()
+  if (keyword) qs.append('keyword', keyword)
+  if (status && status !== '全部') qs.append('status', status)
+  const q = qs.toString()
+  return get('/admin/reviews' + (q ? '?' + q : ''))
+}
+
+// 评价审核：PUT /api/admin/review/status（APPROVED 通过 / REJECTED 驳回）
+export function reviewAuditApi(id, status) {
+  return put('/admin/review/status', { id, status })
+}
+
+// 删除评价：DELETE /api/admin/review/{id}
+export function reviewDeleteApi(id) {
+  return del(`/admin/review/${id}`)
+}

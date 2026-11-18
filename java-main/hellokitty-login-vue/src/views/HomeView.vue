@@ -16,7 +16,11 @@
               <span class="nav-label">我的收藏</span>
               <span class="nav-badge" v-if="store.favorites.length">{{ store.favorites.length }}</span>
             </button>
-            <button class="nav-item nav-icon-btn" @click="router.push('/cart')" title="购物车">
+            <button class="nav-item nav-icon-btn" @click="router.push('/orders')" title="我的订单">
+              <span class="nav-ico">🧾</span>
+              <span class="nav-label">我的订单</span>
+            </button>
+            <button class="nav-item nav-icon-btn" @click="router.push('/cart')" title="购物车" data-cart-fly-target>
               <span class="nav-ico">🛒</span>
               <span class="nav-label">购物车</span>
               <span class="nav-badge" v-if="store.cartCount()">{{ store.cartCount() }}</span>
@@ -83,7 +87,7 @@
               class="fav-btn"
               :class="{ on: store.isFavorite(item.id) }"
               :title="store.isFavorite(item.id) ? '取消收藏' : '加入收藏'"
-              @click.stop="toggleFav(item)"
+              @click.stop="toggleFav(item, $event)"
             >{{ store.isFavorite(item.id) ? '💖' : '🤍' }}</button>
             <div class="good-emoji" @click="goDetail(item)">
               <img v-if="item.image" :src="item.image" :alt="item.name" class="good-img" loading="lazy">
@@ -95,7 +99,7 @@
               <span class="good-price">¥{{ Number(item.price).toFixed(2) }}</span>
               <span class="good-tag">{{ item.tag }}</span>
             </div>
-            <button class="cart-add-btn" @click.stop="addToCart(item)" title="加入购物车">
+            <button class="cart-add-btn" @click.stop="addToCart(item, $event)" title="加入购物车">
               ＋ 加入购物车
             </button>
           </div>
@@ -116,6 +120,7 @@ import { useRouter } from 'vue-router'
 import { searchApi } from '../api/home'
 import { mockGoods, filterGoods, allTags } from '../api/goodsData'
 import { store } from '../api/store'
+import { heartBurst, beatHeart, flyToCart } from '../utils/effects'
 
 const router = useRouter()
 
@@ -176,12 +181,20 @@ function goHome() {
   if (contentRef.value) contentRef.value.scrollTop = 0
 }
 
-function toggleFav(item) {
-  store.toggleFavorite(item)
+function toggleFav(item, e) {
+  const btn = e && e.currentTarget ? e.currentTarget : null
+  const added = store.toggleFavorite(item)
+  if (added && btn) {
+    heartBurst(btn)
+    beatHeart(btn)
+  }
 }
 
-function addToCart(item) {
+function addToCart(item, e) {
   store.addToCart(item)
+  if (e && e.currentTarget) {
+    flyToCart(e.currentTarget, item)
+  }
 }
 
 function goDetail(item) {
