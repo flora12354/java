@@ -1,0 +1,247 @@
+/* ============================================================
+ * Hello Kitty 主题变量
+ * 通过 <html data-theme="light|rose|night"> 切换整套配色
+ * index.html 的首屏脚本会先于本文件应用 data-theme，避免闪色
+ * ============================================================ */
+
+/* ---------- 基础（light 为默认，写在 :root 上） ---------- */
+:root,
+:root[data-theme='light'] {
+  color-scheme: light;
+
+  /* 品牌色 */
+  --brand: #ff5c93;
+  --brand-2: #ff87b0;
+  --brand-3: #ffb3cd;
+  --brand-4: #ffe0ec;
+  --on-brand: #ffffff;
+
+  /* 文字 */
+  --text: #4a2f3a;
+  --text-2: #7a5b68;
+  --text-3: #a98897;
+  --text-4: #c3a7b4;
+  --text-6: #b08e9d;
+
+  /* 背景 / 表面 */
+  --page-gradient: linear-gradient(135deg, #fff0f5 0%, #ffe4ee 45%, #fde7f3 100%);
+  --card: rgba(255, 255, 255, 0.88);
+  --surface-soft: rgba(255, 255, 255, 0.7);
+  --surface-tint: rgba(255, 92, 147, 0.08);
+  --surface-warm: #fff6f9;
+  --tint-2: rgba(255, 92, 147, 0.14);
+  --nav-glass: rgba(255, 255, 255, 0.72);
+  --overlay: rgba(74, 47, 58, 0.38);
+
+  /* 边框 / 分隔 */
+  --border: rgba(255, 138, 176, 0.35);
+  --border-tint: rgba(255, 138, 176, 0.2);
+  --hairline: rgba(255, 138, 176, 0.28);
+
+  /* 阴影 / 光晕 */
+  --shadow-1: rgba(255, 120, 165, 0.18);
+  --shadow-2: rgba(255, 120, 165, 0.22);
+  --shadow-3: rgba(255, 120, 165, 0.3);
+  --shadow-neutral: rgba(120, 80, 95, 0.18);
+  --shadow-neutral-strong: rgba(120, 80, 95, 0.28);
+  --glow-1: rgba(255, 92, 147, 0.35);
+  --glow-2: rgba(255, 92, 147, 0.28);
+  --ring: rgba(255, 92, 147, 0.45);
+
+  /* 危险色 */
+  --danger-strong: #e0345a;
+
+  /* 装饰物（漂浮蝴蝶结 / 圆点） */
+  --deco-1: #ff9ec0;
+  --deco-2: #ffc2d8;
+  --deco-3: #ffd9e8;
+  --deco-4: #f9a8cf;
+  --deco-opacity: 0.55;
+
+  /* 后台管理专用 */
+  --admin-bg: linear-gradient(135deg, #fdf2f6 0%, #fbe4ee 100%);
+  --admin-card: rgba(255, 255, 255, 0.9);
+  --admin-nav: rgba(255, 255, 255, 0.82);
+  --admin-head: #fff0f5;
+  --admin-text: #4a2f3a;
+  --admin-text-2: #7a5b68;
+  --admin-text-3: #a98897;
+  --admin-text-4: #c3a7b4;
+  --admin-border: rgba(255, 138, 176, 0.3);
+  --admin-nav-border: rgba(255, 138, 176, 0.25);
+  --admin-row-border: rgba(255, 138, 176, 0.22);
+  --admin-accent: #ff5c93;
+  --admin-accent-2: #ff87b0;
+  --admin-on-accent: #ffffff;
+  --admin-hover: rgba(255, 92, 147, 0.08);
+  --admin-focus: rgba(255, 92, 147, 0.35);
+  --admin-glow: rgba(255, 92, 147, 0.3);
+  --admin-shadow: rgba(255, 120, 165, 0.16);
+  --admin-shadow-strong: rgba(120, 80, 95, 0.26);
+  --admin-overlay: rgba(74, 47, 58, 0.4);
+  --admin-nav-text: #7a5b68;
+  --admin-nav-muted: #a98897;
+  --admin-login-1: #ffe0ec;
+  --admin-login-2: #ffc2d8;
+  --admin-danger: #e0345a;
+  --admin-danger-hover: #c8294c;
+  --admin-danger-soft: rgba(224, 52, 90, 0.1);
+  --admin-danger-border: rgba(224, 52, 90, 0.3);
+}
+
+/* ---------- 玫红 rose ---------- */
+:root[data-theme='rose'] {
+  color-scheme: light;
+
+  --brand: #f2488a;
+  --brand-2: #f76fa5;
+  --brand-3: #f79bbc;
+  --brand-4: #ffd6e6;
+  --on-brand: #ffffff;
+
+  --text: #4d2237;
+  --text-2: #82415d;
+  --text-3: #ad6a87;
+  --text-4: #c996ae;
+  --text-6: #b87e99;
+
+  --page-gradient: linear-gradient(135deg, #fff0f6 0%, #ffdce9 50%, #f8c9dd 100%);
+  --card: rgba(255, 255, 255, 0.9);
+  --surface-soft: rgba(255, 255, 255, 0.72);
+  --surface-tint: rgba(242, 72, 138, 0.09);
+  --surface-warm: #fff5f9;
+  --tint-2: rgba(242, 72, 138, 0.15);
+  --nav-glass: rgba(255, 255, 255, 0.75);
+  --overlay: rgba(77, 34, 55, 0.4);
+
+  --border: rgba(247, 111, 165, 0.38);
+  --border-tint: rgba(247, 111, 165, 0.22);
+  --hairline: rgba(247, 111, 165, 0.3);
+
+  --shadow-1: rgba(242, 72, 138, 0.2);
+  --shadow-2: rgba(242, 72, 138, 0.24);
+  --shadow-3: rgba(242, 72, 138, 0.32);
+  --shadow-neutral: rgba(120, 55, 85, 0.2);
+  --shadow-neutral-strong: rgba(120, 55, 85, 0.3);
+  --glow-1: rgba(242, 72, 138, 0.38);
+  --glow-2: rgba(242, 72, 138, 0.3);
+  --ring: rgba(242, 72, 138, 0.48);
+
+  --danger-strong: #d92656;
+
+  --deco-1: #f76fa5;
+  --deco-2: #f9a3c5;
+  --deco-3: #fbc9dd;
+  --deco-4: #ef5f9c;
+  --deco-opacity: 0.6;
+
+  --admin-bg: linear-gradient(135deg, #fdf0f6 0%, #f9d9e7 100%);
+  --admin-card: rgba(255, 255, 255, 0.9);
+  --admin-nav: rgba(255, 255, 255, 0.82);
+  --admin-head: #ffeef6;
+  --admin-text: #4d2237;
+  --admin-text-2: #82415d;
+  --admin-text-3: #ad6a87;
+  --admin-text-4: #c996ae;
+  --admin-border: rgba(247, 111, 165, 0.32);
+  --admin-nav-border: rgba(247, 111, 165, 0.26);
+  --admin-row-border: rgba(247, 111, 165, 0.24);
+  --admin-accent: #f2488a;
+  --admin-accent-2: #f76fa5;
+  --admin-on-accent: #ffffff;
+  --admin-hover: rgba(242, 72, 138, 0.09);
+  --admin-focus: rgba(242, 72, 138, 0.38);
+  --admin-glow: rgba(242, 72, 138, 0.32);
+  --admin-shadow: rgba(242, 72, 138, 0.18);
+  --admin-shadow-strong: rgba(120, 55, 85, 0.28);
+  --admin-overlay: rgba(77, 34, 55, 0.42);
+  --admin-nav-text: #82415d;
+  --admin-nav-muted: #ad6a87;
+  --admin-login-1: #ffd6e6;
+  --admin-login-2: #f9a3c5;
+  --admin-danger: #d92656;
+  --admin-danger-hover: #bd1f48;
+  --admin-danger-soft: rgba(217, 38, 86, 0.1);
+  --admin-danger-border: rgba(217, 38, 86, 0.32);
+}
+
+/* ---------- 夜间 night ---------- */
+:root[data-theme='night'] {
+  color-scheme: dark;
+
+  --brand: #ff7fae;
+  --brand-2: #ff9dc2;
+  --brand-3: #c96490;
+  --brand-4: #4a2a3a;
+  --on-brand: #2a101c;
+
+  --text: #f6e6ee;
+  --text-2: #d9b7c8;
+  --text-3: #b28fa2;
+  --text-4: #8d6d7e;
+  --text-6: #a17f92;
+
+  --page-gradient: linear-gradient(135deg, #1c1020 0%, #291528 50%, #20121f 100%);
+  --card: rgba(52, 32, 48, 0.82);
+  --surface-soft: rgba(52, 32, 48, 0.7);
+  --surface-tint: rgba(255, 127, 174, 0.12);
+  --surface-warm: #2c1a29;
+  --tint-2: rgba(255, 127, 174, 0.2);
+  --nav-glass: rgba(52, 32, 48, 0.78);
+  --overlay: rgba(8, 4, 10, 0.62);
+
+  --border: rgba(255, 127, 174, 0.28);
+  --border-tint: rgba(255, 127, 174, 0.16);
+  --hairline: rgba(255, 127, 174, 0.22);
+
+  --shadow-1: rgba(0, 0, 0, 0.35);
+  --shadow-2: rgba(0, 0, 0, 0.42);
+  --shadow-3: rgba(0, 0, 0, 0.5);
+  --shadow-neutral: rgba(0, 0, 0, 0.4);
+  --shadow-neutral-strong: rgba(0, 0, 0, 0.55);
+  --glow-1: rgba(255, 127, 174, 0.3);
+  --glow-2: rgba(255, 127, 174, 0.24);
+  --ring: rgba(255, 127, 174, 0.5);
+
+  --danger-strong: #ff6b8b;
+
+  --deco-1: #c96490;
+  --deco-2: #8f4a6b;
+  --deco-3: #6d3854;
+  --deco-4: #a5527a;
+  --deco-opacity: 0.35;
+
+  --admin-bg: linear-gradient(135deg, #1c1020 0%, #291528 100%);
+  --admin-card: rgba(52, 32, 48, 0.86);
+  --admin-nav: rgba(40, 24, 38, 0.88);
+  --admin-head: #2c1a29;
+  --admin-text: #f6e6ee;
+  --admin-text-2: #d9b7c8;
+  --admin-text-3: #b28fa2;
+  --admin-text-4: #8d6d7e;
+  --admin-border: rgba(255, 127, 174, 0.24);
+  --admin-nav-border: rgba(255, 127, 174, 0.2);
+  --admin-row-border: rgba(255, 127, 174, 0.18);
+  --admin-accent: #ff7fae;
+  --admin-accent-2: #ff9dc2;
+  --admin-on-accent: #2a101c;
+  --admin-hover: rgba(255, 127, 174, 0.12);
+  --admin-focus: rgba(255, 127, 174, 0.45);
+  --admin-glow: rgba(255, 127, 174, 0.28);
+  --admin-shadow: rgba(0, 0, 0, 0.38);
+  --admin-shadow-strong: rgba(0, 0, 0, 0.55);
+  --admin-overlay: rgba(8, 4, 10, 0.66);
+  --admin-nav-text: #d9b7c8;
+  --admin-nav-muted: #b28fa2;
+  --admin-login-1: #4a2a3a;
+  --admin-login-2: #8f4a6b;
+  --admin-danger: #ff6b8b;
+  --admin-danger-hover: #ff87a2;
+  --admin-danger-soft: rgba(255, 107, 139, 0.12);
+  --admin-danger-border: rgba(255, 107, 139, 0.35);
+}
+
+/* 主题切换时的平滑过渡 */
+html {
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
